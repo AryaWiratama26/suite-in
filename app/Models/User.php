@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function ownedHotels()
+    {
+        return $this->hasMany(Hotel::class, 'owner_id');
+    }
+
+    public function isAdmin(): bool
+    {
+        return !empty($this->role) && $this->role === 'admin';
+    }
+
+    public function isHotelOwner(): bool
+    {
+        return !empty($this->role) && $this->role === 'hotel_owner';
+    }
+
+    public function isCustomer(): bool
+    {
+        return empty($this->role) || $this->role === 'customer';
     }
 }

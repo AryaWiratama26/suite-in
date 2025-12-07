@@ -15,11 +15,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create admin user (only if doesn't exist)
+        if (!User::where('email', 'admin@suite.in')->exists()) {
+            User::create([
+                'name' => 'Admin',
+                'email' => 'admin@suite.in',
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'role' => 'admin',
+            ]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create hotel owner user (only if doesn't exist)
+        if (!User::where('email', 'owner@suite.in')->exists()) {
+            User::create([
+                'name' => 'Hotel Owner',
+                'email' => 'owner@suite.in',
+                'password' => \Illuminate\Support\Facades\Hash::make('owner123'),
+                'role' => 'hotel_owner',
+            ]);
+        }
+
+        // Create test user (only if doesn't exist)
+        if (!User::where('email', 'test@example.com')->exists()) {
+            User::create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'customer',
+            ]);
+        }
+
+        // Seed in order
+        $this->call([
+            AmenitySeeder::class,
+            RoomTypeSeeder::class,
+            HotelSeeder::class,
         ]);
     }
 }
